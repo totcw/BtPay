@@ -94,8 +94,8 @@ public class BtPay {
                     @Override
                     public void onError(Throwable e) {
                         if (BtPay.mBtPayCallBack != null) {
-                            BtPay.mBtPayCallBack.done(new BtPayResult(BtPayResult.RESULT_FAIL, BtPayResult.APP_INTERNAL_NETWORK_ERR_CODE, BtPayResult.FAIL_NETWORK_ISSUE,
-                                    "服务器异常"));
+                            BtPay.mBtPayCallBack.done(new BtPayResult(e.toString(), BtPayResult.APP_INTERNAL_NETWORK_ERR_CODE, BtPayResult.FAIL_NETWORK_ISSUE,
+                                    "服务器异常",e));
                         }
                     }
 

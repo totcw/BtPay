@@ -28,7 +28,7 @@ public class BtPayResult implements BtResult{
     //提供详细的支付信息，比如原生的支付宝返回信息
     private String detailInfo;
 
-
+    private Throwable mThrowable;
     //成功的代码
     public static final int APP_PAY_SUCC_CODE = 0;
     //取消的代码
@@ -105,6 +105,14 @@ public class BtPayResult implements BtResult{
         this.detailInfo = detailInfo;
     }
 
+    public BtPayResult(String result, Integer errCode, String errMsg, String detailInfo, Throwable throwable) {
+        this.result = result;
+        this.errCode = errCode;
+        this.errMsg = errMsg;
+        this.detailInfo = detailInfo;
+        mThrowable = throwable;
+    }
+
     public String getResult() {
         return result;
     }
@@ -145,5 +153,13 @@ public class BtPayResult implements BtResult{
                 ", errMsg='" + errMsg + '\'' +
                 ", detailInfo='" + detailInfo + '\'' +
                 '}';
+    }
+
+    public Throwable getThrowable() {
+        return mThrowable;
+    }
+
+    public void setThrowable(Throwable throwable) {
+        mThrowable = throwable;
     }
 }
