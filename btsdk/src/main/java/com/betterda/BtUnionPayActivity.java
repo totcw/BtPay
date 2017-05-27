@@ -14,7 +14,6 @@ import com.betterda.javabean.BtPayResult;
 import com.unionpay.UPPayAssistEx;
 
 
-
 /**
  * 银联支付
  */

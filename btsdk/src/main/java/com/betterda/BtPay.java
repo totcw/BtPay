@@ -9,10 +9,17 @@ import com.betterda.api.Api;
 import com.betterda.callback.BtPayCallBack;
 import com.betterda.javabean.BtPayResult;
 import com.betterda.javabean.PayCloudReqModel;
+import com.betterda.utils.KeyGenerator;
+
+import java.util.Map;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.betterda.utils.KeyGenerator.genKeyPair;
+import static com.betterda.utils.KeyGenerator.getPrivateKey;
+import static com.betterda.utils.KeyGenerator.getPublicKey;
 
 /**
  * Bt支付类
@@ -79,7 +86,11 @@ public class BtPay {
         //设置回调
         this.mBtPayCallBack = btPayCallBack;
 
-        //校验参数
+        //校验参数  TODO
+
+        //转成json  TODO
+
+        //用rsa加密 TODO
 
         //往服务器提交数据
         Api.getNetService().getTn()
@@ -102,7 +113,27 @@ public class BtPay {
                     @Override
                     public void onNext(String s) {
                         // 根据通道类型 解析自己服务器的数据
-                        requestPayForUnion(s);
+
+                        try {
+                            Map<String,Object> keyMap =  KeyGenerator.genKeyPair();
+                            byte[] b = new byte[]{1, 0};
+                            byte[] bytes = KeyGenerator.encryptByPrivateKey(b, KeyGenerator.getPrivateKey(keyMap));
+                            System.out.println(bytes.toString());
+                            String st = new String(bytes);
+                            System.out.println("st:"+st);
+                            byte[] bytes1 = KeyGenerator.decryptByPrivateKey(bytes, KeyGenerator.getPrivateKey(keyMap));
+                            System.out.println("st2:"+new String(bytes1));
+                            if (s.equals(new String(bytes1))) {
+                                System.out.println("1");
+                            }
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                        // requestPayForUnion(s);
                     }
                 });
     }

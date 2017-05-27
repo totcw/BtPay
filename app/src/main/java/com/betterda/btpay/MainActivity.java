@@ -11,6 +11,7 @@ import com.betterda.javabean.BtPayResult;
 import com.betterda.callback.BtPayCallBack;
 import com.betterda.callback.BtResult;
 import com.betterda.javabean.PayCloudReqModel;
+import com.betterda.utils.KeyGenerator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
 
