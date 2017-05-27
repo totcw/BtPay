@@ -114,7 +114,7 @@ public class BtPay {
                     public void onNext(String s) {
                         // 根据通道类型 解析自己服务器的数据
 
-                        try {
+                     /*   try {
                             Map<String,Object> keyMap =  KeyGenerator.genKeyPair();
                             byte[] b = new byte[]{1, 0};
                             byte[] bytes = KeyGenerator.encryptByPrivateKey(b, KeyGenerator.getPrivateKey(keyMap));
@@ -130,10 +130,10 @@ public class BtPay {
 
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }
+                        }*/
 
 
-                        // requestPayForUnion(s);
+                         requestPayForUnion(s);
                     }
                 });
     }
