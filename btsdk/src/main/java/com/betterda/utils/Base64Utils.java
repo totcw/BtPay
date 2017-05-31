@@ -27,7 +27,9 @@ public class Base64Utils {
     }
 
     public static byte[] decode(String privateKey) {
-        return Base64.decode(privateKey, Base64.NO_WRAP);
+
+        return Base64.decode(privateKey, Base64.DEFAULT);
     }
+
 
 }

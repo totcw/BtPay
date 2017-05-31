@@ -4,13 +4,25 @@ package com.betterda;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.betterda.api.Api;
 import com.betterda.callback.BtPayCallBack;
 import com.betterda.javabean.BtPayResult;
 import com.betterda.javabean.PayCloudReqModel;
+import com.betterda.paycloud.sdk.constant.SDKConstant;
+import com.betterda.paycloud.sdk.handler.PayCloudReqService;
+import com.betterda.paycloud.sdk.model.PayCloudRespModel;
+import com.betterda.paycloud.sdk.util.Base64Util;
+import com.betterda.paycloud.sdk.util.HttpClient;
+import com.betterda.paycloud.sdk.util.PlatService;
+import com.betterda.paycloud.sdk.util.ReqHandlerFactory;
+import com.betterda.paycloud.sdk.util.ReqObjectFactory;
+import com.betterda.utils.Base64Utils;
 import com.betterda.utils.KeyGenerator;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import rx.Observer;
@@ -25,6 +37,13 @@ import static com.betterda.utils.KeyGenerator.getPublicKey;
  * Bt支付类
  */
 public class BtPay {
+
+
+    public static final String PUB_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCHEnS5dLtlXREkSVtUN8OGqcRyU/Qxn46DI18eJ/M4KLowosYQUCj3s06DUfaGDUrZgAv+xl90keLuBsLboxad8Lw1Bf0+I9ILakKs4nlasGNEG2l9jaxeJru5jpV4mTxUl3V2LiokWQAKJpGmupesMqarVk5n4u1lwTe4gOi0wwIDAQAB";
+    public static final String APP_ID = "ff8080815b1538be015b153988260001";
+    public static final String APP_CODE = "ff8080815b1538be015b153988260002";
+    public static final String VERSION = "1.0.1";
+
 
     private static final String TAG = "BtPay";
 
@@ -92,8 +111,56 @@ public class BtPay {
 
         //用rsa加密 TODO
 
+        try {
+          /*  PayCloudRespModel jsonMessage = ReqHandlerFactory.getInstance().createUnionpayAppConsumeHandler().doConsume(ReqObjectFactory.getInstance().createUnionPayAppReqData(APP_ID, "20", "1000", "orderid", "2016-5-7", VERSION), PUB_KEY);
+            System.out.println("success:"+jsonMessage.isSuccess());
+            System.out.println("msg:"+jsonMessage.getMsg());
+            System.out.println("code:"+jsonMessage.getErrorCode());
+            System.out.println("attributes:"+jsonMessage.getAttributes());*/
+
+          /*  HttpClient hc = new HttpClient(reqUrl, 30000, 30000);
+            try {
+                int e = hc.send(doAssembleData(ReqObjectFactory.getInstance().createUnionPayAppReqData(APP_ID, "20", "1000", "orderid", "2016-5-7", VERSION), PUB_KEY), SDKConstant.encoding_UTF8);
+                if(200 == e) {
+                    String resultString = hc.getResult();
+                    if(resultString != null && !"".equals(resultString)) {
+                        System.out.println("resut:"+resultString);
+                    }
+                } else {
+                    System.out.println("返回http状态码[" + e + "]，请检查请求报文或者请求地址是否正确");
+                }
+            } catch (Exception var6) {
+                System.out.println("var6:"+var6);
+            }*/
+
+
+            final String reqUrl = "http://192.168.0.122:8080/paycloud-openapi/api/unionpay/app/getform/20/" + APP_ID;
+            System.out.println("reqUrl:"+reqUrl);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    PayCloudRespModel jsonMessage = null;
+                    try {
+                        //时间格式:yyyyMMddHHmmss
+                        jsonMessage = ReqHandlerFactory.getInstance().createUnionpayAppConsumeHandler().doConsume(ReqObjectFactory.getInstance().createUnionPayAppReqData(APP_ID, "20", "1000", "orderid", "20170531113027", VERSION), PUB_KEY);
+                        System.out.println("success:"+jsonMessage.isSuccess());
+                        System.out.println("msg:"+jsonMessage.getMsg());
+                        System.out.println("code:"+jsonMessage.getErrorCode());
+                        System.out.println("attributes:"+jsonMessage.getAttributes());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }).start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         //往服务器提交数据
-        Api.getNetService().getTn()
+       /* Api.getNetService().getTn()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<String>() {
@@ -114,7 +181,7 @@ public class BtPay {
                     public void onNext(String s) {
                         // 根据通道类型 解析自己服务器的数据
 
-                     /*   try {
+                     *//*   try {
                             Map<String,Object> keyMap =  KeyGenerator.genKeyPair();
                             byte[] b = new byte[]{1, 0};
                             byte[] bytes = KeyGenerator.encryptByPrivateKey(b, KeyGenerator.getPrivateKey(keyMap));
@@ -130,12 +197,12 @@ public class BtPay {
 
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }*/
+                        }*//*
 
 
                          requestPayForUnion(s);
                     }
-                });
+                });*/
     }
 
 
@@ -149,4 +216,7 @@ public class BtPay {
         intent.putExtra("mode","01");
         mContextActivity.startActivity(intent);
     }
+
+
+
 }

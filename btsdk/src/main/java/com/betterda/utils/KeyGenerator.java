@@ -2,6 +2,9 @@ package com.betterda.utils;
 
 import android.util.Base64;
 
+import com.betterda.BtPay;
+import com.betterda.paycloud.sdk.util.Base64Util;
+
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
@@ -37,7 +40,7 @@ public class KeyGenerator {
 	 /** *//** 
      * 加密算法RSA 
      */  
-    public static final String KEY_ALGORITHM = "RSA";  
+    public static final String KEY_ALGORITHM = "RSA";
       
     /** *//** 
      * 签名算法 
@@ -180,12 +183,12 @@ public class KeyGenerator {
      */  
     public static byte[] decryptByPublicKey(byte[] encryptedData, String publicKey)  
             throws Exception {  
-        byte[] keyBytes = Base64Utils.decode(publicKey);  
+        byte[] keyBytes = Base64Utils.decode(publicKey);
         X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM,"BC");
         Key publicK = keyFactory.generatePublic(x509KeySpec);  
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());  
-        cipher.init(Cipher.DECRYPT_MODE, publicK);  
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+        cipher.init(Cipher.DECRYPT_MODE, publicK);
         int inputLen = encryptedData.length;  
         ByteArrayOutputStream out = new ByteArrayOutputStream();  
         int offSet = 0;  
@@ -224,7 +227,7 @@ public class KeyGenerator {
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM,"BC");
         Key publicK = keyFactory.generatePublic(x509KeySpec);  
         // 对数据加密  
-        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());  
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, publicK);  
         int inputLen = data.length;  
         ByteArrayOutputStream out = new ByteArrayOutputStream();  
@@ -337,10 +340,7 @@ public class KeyGenerator {
     }
 
     public static void main(String[] args) throws Exception {
-       /* Map<String,Object> keyMap =  genKeyPair();
-        System.out.println(getPublicKey(keyMap));
-        System.out.println(getPrivateKey(keyMap));*/
-
-        System.out.println(getBase64("test"));
+        byte[] bytes = decryptByPublicKey("JCvtAwL5O/jB4/Wr97Iv9ZwXsp06uOR53wuXDWT/dMuZ611J0PfZvXQNFQ2I9jsp1vslfizYCPfrr1yPcMDjShk/SvytJEKOgzKhx47njL/5x8QQwcbNY0h7prLVExkGUhNGHmuJ4Ib6TWPtGm0beP1rSDQtNbQIkQfeXjNkJ34=".getBytes("utf-8"), BtPay.PUB_KEY);
+        System.out.println(new String(bytes));
     }
 }
