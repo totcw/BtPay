@@ -1,8 +1,5 @@
 package com.betterda.api;
 
-import retrofit2.http.GET;
-import rx.Observable;
-
 /**
  * @author : lyf
  * @version : 1.0.0
@@ -22,7 +19,7 @@ import rx.Observable;
 public interface ApiService {
 
 
-    @GET("getacptn")
-    Observable<String> getTn();
+   /* @GET("getacptn")
+    Observable<String> getTn();*/
 
 }

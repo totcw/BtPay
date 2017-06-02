@@ -1,7 +1,6 @@
 package com.betterda.btpay.api;
 
-import retrofit2.http.GET;
-import rx.Observable;
+
 
 /**
  * @author : lyf
