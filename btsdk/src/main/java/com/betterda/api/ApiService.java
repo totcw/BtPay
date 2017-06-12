@@ -1,5 +1,13 @@
 package com.betterda.api;
 
+
+
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import rx.Observable;
+
 /**
  * @author : lyf
  * @version : 1.0.0
@@ -18,8 +26,11 @@ package com.betterda.api;
 
 public interface ApiService {
 
-
-   /* @GET("getacptn")
-    Observable<String> getTn();*/
+    @FormUrlEncoded
+    @POST("form05_6_2_AppConsume")
+    Observable<String> getTn(@Field("merId") String merId,
+                             @Field("txnAmt") String txnAmt,
+                             @Field("orderId") String orderId,
+                             @Field("txnTime") String txnTime);
 
 }

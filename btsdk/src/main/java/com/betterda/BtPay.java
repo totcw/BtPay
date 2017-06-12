@@ -6,11 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.betterda.api.Api;
 import com.betterda.callback.BtPayCallBack;
 import com.betterda.javabean.PayCloudReqModel;
 import com.betterda.paycloud.sdk.model.PayCloudRespModel;
 import com.betterda.paycloud.sdk.util.ReqHandlerFactory;
 import com.betterda.paycloud.sdk.util.ReqObjectFactory;
+import com.unionpay.UPPayAssistEx;
+
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Bt支付类
@@ -76,6 +82,8 @@ public class BtPay {
      * 支付调用总接口
      */
     public void requestPay(PayCloudReqModel payCloudReqModel, BtPayCallBack btPayCallBack) {
+
+
         if (payCloudReqModel == null) {
             return;
         }
@@ -108,6 +116,31 @@ public class BtPay {
 
     }
 
+    public void requestPay() {
+      /*  Api.getNetService().getTn("827791049000001","100","20170612105107","20170612105107")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        System.out.println("s:"+s);
+                    }
+                });*/
+
+        requestPayForUnion("872188537906328986905");
+
+    }
+
 
     /**
      * 进入银联支付
@@ -117,7 +150,7 @@ public class BtPay {
     private void requestPayForUnion(String s) {
         Intent intent = new Intent(mContextActivity, BtUnionPayActivity.class);
         intent.putExtra("tn", s);
-        intent.putExtra("mode", "01");
+        intent.putExtra("mode", "00");
         mContextActivity.startActivity(intent);
     }
 
