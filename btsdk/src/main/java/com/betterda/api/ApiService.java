@@ -1,10 +1,10 @@
 package com.betterda.api;
 
 
+import com.betterda.javabean.PlatOutboundMsg;
 
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
 import rx.Observable;
 
@@ -27,10 +27,8 @@ import rx.Observable;
 public interface ApiService {
 
     @FormUrlEncoded
-    @POST("form05_6_2_AppConsume")
-    Observable<String> getTn(@Field("merId") String merId,
-                             @Field("txnAmt") String txnAmt,
-                             @Field("orderId") String orderId,
-                             @Field("txnTime") String txnTime);
+    @POST("ctrl.do?api/v1/mer/getform")
+    Observable<PlatOutboundMsg> getTn(@Field("data") String data,
+                                      @Field("appId") String appId);
 
 }

@@ -38,13 +38,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_unionpay:
                 PayCloudReqModel payCloudReqModel = new PayCloudReqModel();
 
-                /*BtPay.getInstance(MainActivity.this).requestPay(payCloudReqModel,new BtPayCallBack() {
+                BtPay.getInstance(MainActivity.this).requestPay(payCloudReqModel,new BtPayCallBack() {
                     @Override
                     public void done(BtResult result) {
                         Toast.makeText(MainActivity.this,((BtPayResult)result).getResult(),0).show();
                     }
-                });*/
-                BtPay.getInstance(MainActivity.this).requestPay();
+                });
+               // BtPay.getInstance(MainActivity.this).requestPay();
                 break;
             case R.id.btn_unionwappay:
                 break;

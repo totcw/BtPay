@@ -17,7 +17,7 @@ public class Api {
     private static OkHttpClient okHttpClient = new OkHttpClient();
     private static Converter.Factory gsonConverterFactory = GsonConverterFactory.create();
     private static CallAdapter.Factory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
-    private static String URL = "http://100.64.248.179:9998/ACPSample_AppServer/";
+    private static String URL = "http://www.meichebang.com.cn:8999/EffersonPay/unionpay/app/";
 
     /*
      * 通过retrofit返回接口的实现类

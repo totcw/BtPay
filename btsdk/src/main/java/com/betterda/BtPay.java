@@ -4,15 +4,22 @@ package com.betterda;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.betterda.api.Api;
 import com.betterda.callback.BtPayCallBack;
 import com.betterda.javabean.PayCloudReqModel;
+import com.betterda.javabean.PlatOutboundMsg;
 import com.betterda.paycloud.sdk.model.PayCloudRespModel;
+import com.betterda.paycloud.sdk.util.Base64Util;
+import com.betterda.paycloud.sdk.util.KeyGenerator;
 import com.betterda.paycloud.sdk.util.ReqHandlerFactory;
 import com.betterda.paycloud.sdk.util.ReqObjectFactory;
-import com.unionpay.UPPayAssistEx;
+import com.betterda.utils.GsonTools;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -24,9 +31,9 @@ import rx.schedulers.Schedulers;
 public class BtPay {
 
 
-    public static final String PUB_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCHEnS5dLtlXREkSVtUN8OGqcRyU/Qxn46DI18eJ/M4KLowosYQUCj3s06DUfaGDUrZgAv+xl90keLuBsLboxad8Lw1Bf0+I9ILakKs4nlasGNEG2l9jaxeJru5jpV4mTxUl3V2LiokWQAKJpGmupesMqarVk5n4u1lwTe4gOi0wwIDAQAB";
-    public static final String APP_ID = "ff8080815b1538be015b153988260001";
-    public static final String APP_CODE = "ff8080815b1538be015b153988260002";
+    public static final String PUB_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKqQ8mG2VN2rRi5pF4drOi9pB2kdIAiO6YR7LQGDWQkP2DkAI19apajGxDt3q1m2kmWdytX5dmI8AhxEgK+Ak+qoaf7qNv/6NRQUesnJ8kB7sACzEG79CNwxeZy0jLP2E0RC69r/vyyqcD5PwkIuaMNc5KIJhapl0pPmsMZ+F85QIDAQAB";
+    public static final String APP_ID = "47cb95e8badd4521b3bd17da1516d5db";
+    public static final String APP_CODE = "ac3f8f5b72594fac92f42e62a71f35b8";
     public static final String VERSION = "1.0.1";
 
 
@@ -46,6 +53,7 @@ public class BtPay {
     private static BtPay instance;
 
     private BtPay() {
+
     }
 
     /**
@@ -59,6 +67,7 @@ public class BtPay {
         if (instance == null) {
             instance = new BtPay();
             mBtPayCallBack = null;
+
         }
 
         if (context != null) {
@@ -104,9 +113,17 @@ public class BtPay {
                 PayCloudRespModel jsonMessage = null;
                 try {
                     //时间格式:yyyyMMddHHmmss
-                    jsonMessage = ReqHandlerFactory.getInstance().createUnionpayAppConsumeHandler().doConsume(ReqObjectFactory.getInstance().createUnionPayAppReqData(APP_ID, "20", "1000", "orderid", "20170531113027", VERSION), PUB_KEY);
-                    Toast.makeText(mContextActivity,jsonMessage.getMsg(),0).show();
-                    requestPayForUnion("");
+                    String orderId = new SimpleDateFormat("yyyyMMddHHmmssS").format(new Date());
+                    String txnTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+                    jsonMessage = ReqHandlerFactory.getInstance().createUPAppCtrlConsumeHandler().doConsume(ReqObjectFactory.getInstance().createUPAppCtrlReqData(APP_ID, "31", "10", orderId, txnTime,"http://www.baidu.com", VERSION), PUB_KEY);
+                    System.out.println("jsonmessage:"+jsonMessage);
+                 //   if (jsonMessage != null) {
+                        String tn = jsonMessage.getMsg();
+                        System.out.println("tn:"+tn);
+                        System.out.println("errorCode:"+jsonMessage.getErrorCode());
+                       // System.out.println(jsonMessage.getErrorCode());
+                  //  }
+                    requestPayForUnion(tn);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -117,10 +134,33 @@ public class BtPay {
     }
 
     public void requestPay() {
-      /*  Api.getNetService().getTn("827791049000001","100","20170612105107","20170612105107")
+        String PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCNN6pMibqG6iZI7+XFzkZZUPPRis8vcLW+mHePfLIeX4/sDjFgGnXs9XueccDcIxUWZBTzffOTfRQALKxNPR7fnPWKjbdyCsgHLfMc6uIgX5GXSFpgNBmhVmhaYAAK5aumXDEscOoD5svdv+14RQA1ZuzuMAyoeWT+uKsgJuUWKQIDAQAB";
+        String txnTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String orderId = new SimpleDateFormat("yyyyMMddHHmmssS").format(new Date());
+        String appId = "40289edd58f0d7c40158f0d7c4c50000";
+        String appCode = "40289edd58f0d7fe0158f0d7fe000000";
+        String txnAmt = "10";
+        String backUrl = "http://www.baidu.com";
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("appId", appId);
+        param.put("appCode", appCode);
+        param.put("txnAmt", txnAmt);
+        param.put("orderId", orderId);
+        param.put("txnTime", txnTime);
+        param.put("backUrl",backUrl);
+        String jsonString = GsonTools.getJsonString(param);
+        String data = "";
+        try {
+            byte[] encodeData = KeyGenerator.encryptByPublicKey(jsonString.getBytes("utf-8"),PUBLIC_KEY);
+            data = Base64Util.encode(encodeData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Api.getNetService().getTn(data,appId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
+                .subscribe(new Observer<PlatOutboundMsg>() {
                     @Override
                     public void onCompleted() {
 
@@ -132,12 +172,39 @@ public class BtPay {
                     }
 
                     @Override
-                    public void onNext(String s) {
-                        System.out.println("s:"+s);
+                    public void onNext(PlatOutboundMsg s) {
+                        Map<String, Object> attributes = s.getAttributes();
+                        String tn = (String) attributes.get("tn");
+                        requestPayForUnion(tn);
                     }
-                });*/
+                });
 
-        requestPayForUnion("872188537906328986905");
+        /*RequestParams params = new RequestParams("http://www.meichebang.com.cn:8999/EffersonPay/unionpay/app/ctrl.do?api/v1/mer/getform");
+        params.addBodyParameter("data",data);
+        params.addBodyParameter("appId",appId);
+        x.http().post(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                System.out.println(result);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ex.printStackTrace();
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });*/
+
+        //requestPayForUnion("872188537906328986905");
 
     }
 
