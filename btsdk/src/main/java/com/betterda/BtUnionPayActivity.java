@@ -19,6 +19,11 @@ import com.unionpay.UPPayAssistEx;
  */
 public class BtUnionPayActivity extends Activity {
 
+    private String mResult;
+    private int mErrCode;
+    private String mErrMsg;
+    private String mDetailInfo;
+
     @Override
     public void onStart(){
         super.onStart();
@@ -33,10 +38,17 @@ public class BtUnionPayActivity extends Activity {
             UPPayAssistEx.startPay(this, null, null, tn, mode);
 
         } else {
-            if (BtPay.mBtPayCallBack != null) {
-                BtPay.mBtPayCallBack.done(new BtPayResult(BtPayResult.RESULT_FAIL, BtPayResult.APP_INTERNAL_THIRD_CHANNEL_ERR_CODE, BtPayResult.FAIL_ERR_FROM_CHANNEL,
-                        "获取银联支付流水号失败"));
-            }
+
+            BtPay.mContextActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (BtPay.mBtPayCallBack != null) {
+                        BtPay.mBtPayCallBack.done(new BtPayResult(BtPayResult.RESULT_FAIL, BtPayResult.APP_INTERNAL_PARAMS_ERR_CODE, BtPayResult.FAIL_INVALID_PARAMS,
+                                "获取银联支付流水号失败"));
+                    }
+                }
+            });
+
             finish();
         }
     }
@@ -47,17 +59,17 @@ public class BtUnionPayActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        String result = null;
-        int errCode = -99;
-        String errMsg = null;
-        String detailInfo = "银联支付:";
+        mResult = null;
+        mErrCode = -99;
+        mErrMsg = null;
+        mDetailInfo = "银联支付:";
 
         //银联插件内部升级会出现data为null的情况
         if (data == null) {
-            result = BtPayResult.RESULT_FAIL;
-            errCode = BtPayResult.APP_INTERNAL_THIRD_CHANNEL_ERR_CODE;
-            errMsg = BtPayResult.FAIL_ERR_FROM_CHANNEL;
-            detailInfo += "invalid pay result";
+            mResult = BtPayResult.RESULT_FAIL;
+            mErrCode = BtPayResult.APP_INTERNAL_THIRD_CHANNEL_ERR_CODE;
+            mErrMsg = BtPayResult.FAIL_ERR_FROM_CHANNEL;
+            mDetailInfo += "invalid pay result";
         } else {
             /*
              * 支付控件返回字符串:success、fail、cancel 分别代表支付成功，支付失败，支付取消
@@ -65,32 +77,38 @@ public class BtUnionPayActivity extends Activity {
             String str = data.getExtras().getString("pay_result");
 
             if (str == null) {
-                result = BtPayResult.RESULT_FAIL;
-                errCode = BtPayResult.APP_INTERNAL_THIRD_CHANNEL_ERR_CODE;
-                errMsg = BtPayResult.FAIL_ERR_FROM_CHANNEL;
-                detailInfo += "invalid pay result";
+                mResult = BtPayResult.RESULT_FAIL;
+                mErrCode = BtPayResult.APP_INTERNAL_THIRD_CHANNEL_ERR_CODE;
+                mErrMsg = BtPayResult.FAIL_ERR_FROM_CHANNEL;
+                mDetailInfo += "invalid pay result";
             } else if (str.equalsIgnoreCase("success")) {
-                result = BtPayResult.RESULT_SUCCESS;
-                errCode = BtPayResult.APP_PAY_SUCC_CODE;
-                errMsg = BtPayResult.RESULT_SUCCESS;
-                detailInfo += "支付成功！";
+                mResult = BtPayResult.RESULT_SUCCESS;
+                mErrCode = BtPayResult.APP_PAY_SUCC_CODE;
+                mErrMsg = BtPayResult.RESULT_SUCCESS;
+                mDetailInfo += "支付成功！";
             } else if (str.equalsIgnoreCase("fail")) {
-                result = BtPayResult.RESULT_FAIL;
-                errCode = BtPayResult.APP_INTERNAL_THIRD_CHANNEL_ERR_CODE;
-                errMsg = BtPayResult.RESULT_FAIL;
-                detailInfo += "支付失败！";
+                mResult = BtPayResult.RESULT_FAIL;
+                mErrCode = BtPayResult.APP_INTERNAL_THIRD_CHANNEL_ERR_CODE;
+                mErrMsg = BtPayResult.RESULT_FAIL;
+                mDetailInfo += "支付失败！";
             } else if (str.equalsIgnoreCase("cancel")) {
-                result = BtPayResult.RESULT_CANCEL;
-                errCode = BtPayResult.APP_PAY_CANCEL_CODE;
-                errMsg = BtPayResult.RESULT_CANCEL;
-                detailInfo += "用户取消了支付";
+                mResult = BtPayResult.RESULT_CANCEL;
+                mErrCode = BtPayResult.APP_PAY_CANCEL_CODE;
+                mErrMsg = BtPayResult.RESULT_CANCEL;
+                mDetailInfo += "用户取消了支付";
             }
         }
 
-        if (BtPay.mBtPayCallBack != null) {
-            BtPay.mBtPayCallBack.done(new BtPayResult(result, errCode, errMsg,
-                    detailInfo));
-        }
+
+        BtPay.mContextActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (BtPay.mBtPayCallBack != null) {
+                    BtPay.mBtPayCallBack.done(new BtPayResult(mResult, mErrCode, mErrMsg,
+                            mDetailInfo));
+                }
+            }
+        });
 
         this.finish();
     }

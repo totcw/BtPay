@@ -2,11 +2,6 @@ package com.betterda.javabean;
 
 import android.text.TextUtils;
 
-import com.alibaba.fastjson.JSON;
-import com.betterda.utils.Base64Utils;
-import com.betterda.utils.KeyGenerator;
-
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -103,28 +98,5 @@ public class PayCloudRespModel {
         return null;
     }
 
-    /**
-     * 对参数进行rsa和base64加密
-     * @param model
-     * @param pubKey
-     * @return
-     */
-    protected Map<String, String> doAssembleData(PayCloudReqModel model, String pubKey) {
-        HashMap reqData = new HashMap();
-        //先将数据转成json
-        String jsonString = JSON.toJSONString(model);
-        String data = "";
 
-        try {
-            //进行rsa加密
-            byte[] e = KeyGenerator.encryptByPublicKey(jsonString.getBytes("UTF-8"), pubKey);
-            //进行base64处理
-            data = Base64Utils.encode(e);
-        } catch (Exception var7) {
-            System.out.println(var7);
-        }
-
-        reqData.put("data", data);
-        return reqData;
-    }
 }

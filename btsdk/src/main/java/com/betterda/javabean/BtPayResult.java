@@ -35,12 +35,9 @@ public class BtPayResult implements BtResult{
     public static final int APP_PAY_CANCEL_CODE = -1;
     //参数错误
     public static final int APP_INTERNAL_PARAMS_ERR_CODE = -10;
-    //网络错误
-    public static final int APP_INTERNAL_NETWORK_ERR_CODE = -11;
     //三方错误导致取消支付的代码
     public static final int APP_INTERNAL_THIRD_CHANNEL_ERR_CODE = -12;
-    //异常错误
-    public static final int APP_INTERNAL_EXCEPTION_ERR_CODE = -13;
+
 
     /**
      * 表示支付成功
@@ -57,30 +54,6 @@ public class BtPayResult implements BtResult{
      */
     public static final String RESULT_FAIL = "FAIL";
 
-    /**
-     * 表示支付结果状态未知
-     */
-    public static final String RESULT_UNKNOWN = "UNKNOWN";
-
-    /**
-     * 表示支付中，未获取确认信息
-     */
-    public static final String RESULT_PAYING_UNCONFIRMED = "RESULT_PAYING_UNCONFIRMED";
-
-    /**
-     * 针对银联，存在插件不存在需要安装的问题
-     */
-    public static final String FAIL_PLUGIN_NOT_INSTALLED = "FAIL_PLUGIN_NOT_INSTALLED";
-
-    /**
-     * 针对银联，存在插件需要升级的问题
-     */
-    public static final String FAIL_PLUGIN_NEED_UPGRADE = "FAIL_PLUGIN_NEED_UPGRADE";
-
-    /**
-     * 网络问题造成的支付失败
-     */
-    public static final String FAIL_NETWORK_ISSUE = "FAIL_NETWORK_ISSUE";
 
     /**
      * 参数不合法造成的支付失败
@@ -92,10 +65,7 @@ public class BtPayResult implements BtResult{
      */
     public static final String FAIL_ERR_FROM_CHANNEL = "FAIL_ERR_FROM_CHANNEL";
 
-    /**
-     * 支付过程中的Exception
-     */
-    public static final String FAIL_EXCEPTION = "FAIL_EXCEPTION";
+
 
 
     public BtPayResult(String result, Integer errCode, String errMsg, String detailInfo) {

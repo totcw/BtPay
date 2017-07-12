@@ -19,6 +19,24 @@ public class PayCloudReqModel  {
     private String smsCode;
     private String channeltype;
     private String appid;
+    private String publicKey;
+    private String serviceUrl;
+
+    public String getServiceUrl() {
+        return serviceUrl;
+    }
+
+    public void setServiceUrl(String serviceUrl) {
+        this.serviceUrl = serviceUrl;
+    }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
 
     public String getChanneltype() {
         return channeltype;
